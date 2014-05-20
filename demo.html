@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+  <title>Experiment 2</title>
+  <style>
+    body {
+      background-color: #222;
+    }
+
+    .decorate {
+      border: 1px solid #444;
+      background-color: #555;
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+    }
+
+    #screen {
+      display: block;
+      margin-top: 50px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="screen" class="decorate" width="400" height="320">
+    Your browser doesn't seem to support canvas...
+  </canvas>
+<script type="text/javascript">
+  var canvas = document.getElementById('screen');
+  if (canvas.getContext) {
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0,0,400,320);
+
+    function team(size, mult) {
+      var location = Math.floor(Math.random()*size);
+      return function() {
+        location = (location + Math.floor(Math.random()*mult)) % size;
+        return location;
+      }
+    }
+
+    var team1 = team(8000, 50);
+    var team2 = team(8000, 50);
+
+    // good colors:
+    // #ff9800 = rgb(255, 152, 0)
+    // #7e8aa2 = rgb(126, 138, 162)
+    // #b1d631 = rgb(177, 214, 49)
+    var q = new Array();
+    var id = setInterval(function() {
+      var t1 = team1(),
+          t2 = team2(),
+          t1x = t1 % 100,
+          t1y = Math.floor(t1 / 100),
+          t2x = t2 % 100,
+          t2y = Math.floor(t2 / 100);
+      
+      q.push([t1x,t1y]);
+      q.push([t2x,t2y]);
+
+      for (var i = q.length-2; i >= 0; i-=2) {
+        var j = q.length-i-2;
+        ctx.fillStyle = "#111";
+        ctx.fillRect(q[i][0]*4,q[i][1]*4,4,4);
+        ctx.fillStyle = "rgba(116,149,214," + (1-j*0.06) + ")";
+        ctx.fillRect(q[i][0]*4,q[i][1]*4,4,4);
+
+        ctx.fillStyle = "#111";
+        ctx.fillRect(q[i+1][0]*4,q[i+1][1]*4,4,4);
+        ctx.fillStyle = "rgba(177,214,49," + (1-j*0.06) + ")";
+        ctx.fillRect(q[i+1][0]*4,q[i+1][1]*4,4,4);
+      }
+      if (q.length >= 12) {
+        q.shift();
+        q.shift();
+      }
+    },50); 
+  }
+</script>
+</body>
+</html>
